@@ -1,1 +1,569 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:personal_website/core/theme/app_colors.dart';
+import 'package:personal_website/core/theme/app_text_styles.dart';
+import 'package:personal_website/core/utils/adaptation.dart';
+import 'package:personal_website/core/animations/staggered_animation_controller.dart';
+import 'package:personal_website/core/widgets/custom_scrollbar.dart';
+import 'package:personal_website/core/widgets/slide_fade_in.dart';
+import 'package:url_launcher/url_launcher.dart';
 
+class AboutMeScreen extends StatefulWidget {
+  const AboutMeScreen({super.key});
+
+  @override
+  State<AboutMeScreen> createState() => _AboutMeScreenState();
+}
+
+class _AboutMeScreenState extends State<AboutMeScreen>
+    with SingleTickerProviderStateMixin {
+  late final StaggeredAnimationController _anim;
+  late final ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _anim = StaggeredAnimationController(vsync: this, itemCount: 40)..forward();
+    _scrollController = ScrollController();
+  }
+
+  @override
+  void dispose() {
+    _anim.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage('assets/images/background.png'),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.black54,
+        body: CustomScrollbar(
+          anim: _anim,
+          controller: _scrollController,
+          child: ScrollConfiguration(
+            behavior: ScrollConfiguration.of(
+              context,
+            ).copyWith(scrollbars: false),
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          left: isMobile(context) ? 20.0 : 40.0,
+                        ),
+                        child: SizedBox(
+                          width: isMobile(context) ? 30.0 : 40.0,
+                          child: MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: SlideFadeIn(
+                              animation: _anim.getAnimation(0),
+                              offsetY: isMobile(context) ? -20.0 : -40.0,
+                              child: GestureDetector(
+                                onTap: () => context.go('/info'),
+                                child: Text(
+                                  "←",
+                                  style: AppTextStyles.back(context),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: isMobile(context) ? 300 : 550,
+                        child: SlideFadeIn(
+                          animation: _anim.getAnimation(1),
+                          offsetY: isMobile(context) ? -20.0 : -40.0,
+                          child: Center(
+                            child: Text(
+                              "--ABOUT ME--",
+                              style: AppTextStyles.miniHeader(context),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                          right: isMobile(context) ? 20.0 : 40.0,
+                        ),
+                        child: SizedBox(width: isMobile(context) ? 30.0 : 40.0),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                    width: isMobile(context)
+                        ? MediaQuery.of(context).size.width * 0.95
+                        : 550,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _InfoSection(anim: _anim),
+                        const SizedBox(height: 20.0),
+
+                        _MeSection(anim: _anim),
+                        const SizedBox(height: 20.0),
+
+                        _TechnologiesSection(anim: _anim),
+                        const SizedBox(height: 20.0),
+
+                        _LinksSection(anim: _anim),
+                        const SizedBox(height: 60.0),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  final String leftPart;
+  final String rightPart;
+  final StaggeredAnimationController _anim;
+  final int animationIndex;
+
+  const _InfoRow({
+    required this.leftPart,
+    required this.rightPart,
+    required this._anim,
+    required this.animationIndex,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideFadeIn(
+      animation: _anim.getAnimation(animationIndex),
+      offsetY: isMobile(context) ? 10.0 : 20.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            color: AppColors.background,
+            child: Text(
+              leftPart,
+              style: AppTextStyles.label(
+                context,
+              ).copyWith(color: AppColors.textNav, height: 1.0),
+            ),
+          ),
+          Container(
+            color: AppColors.background,
+            child: Text(
+              rightPart,
+              style: AppTextStyles.label(
+                context,
+              ).copyWith(color: AppColors.textNav, height: 1.0),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoSection extends StatelessWidget {
+  final StaggeredAnimationController _anim;
+
+  const _InfoSection({required this._anim});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SlideFadeIn(
+          animation: _anim.getAnimation(2),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Text("INFO", style: AppTextStyles.label(context)),
+        ),
+        SlideFadeIn(
+          animation: _anim.getAnimation(3),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Container(height: 4, color: Colors.white),
+        ),
+        _InfoRow(
+          leftPart: "NAME:",
+          rightPart: "TIMUR",
+          anim: _anim,
+          animationIndex: 4,
+        ),
+        _InfoRow(
+          leftPart: "AGE:",
+          rightPart: "19",
+          anim: _anim,
+          animationIndex: 5,
+        ),
+        _InfoRow(
+          leftPart: "PRONOUNS:",
+          rightPart: "HE/HIM",
+          anim: _anim,
+          animationIndex: 6,
+        ),
+        _InfoRow(
+          leftPart: "LANGS:",
+          rightPart: "RU, EN (LEARNING)",
+          anim: _anim,
+          animationIndex: 7,
+        ),
+        _InfoRow(
+          leftPart: "FROM:",
+          rightPart: "MOSCOW (19°)",
+          anim: _anim,
+          animationIndex: 8,
+        ),
+        _InfoRow(
+          leftPart: "TIMEZONE:",
+          rightPart: "UTC+3",
+          anim: _anim,
+          animationIndex: 9,
+        ),
+        _InfoRow(
+          leftPart: "CURRENT TIME:",
+          rightPart: "21:37:27",
+          anim: _anim,
+          animationIndex: 10,
+        ),
+        _InfoRow(
+          leftPart: "LEARNING:",
+          rightPart: "FLUTTER, GO",
+          anim: _anim,
+          animationIndex: 11,
+        ),
+      ],
+    );
+  }
+}
+
+class _MeSection extends StatelessWidget {
+  final StaggeredAnimationController _anim;
+
+  const _MeSection({required this._anim});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SlideFadeIn(
+          animation: _anim.getAnimation(12),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Text("ME", style: AppTextStyles.label(context)),
+        ),
+        SlideFadeIn(
+          animation: _anim.getAnimation(13),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Container(height: 4, color: Colors.white),
+        ),
+        SlideFadeIn(
+          animation: _anim.getAnimation(14),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Container(
+            color: AppColors.background,
+            child: Text(
+              isMobile(context)
+                  ? "I   am    an   18-year-old"
+                  : "I    am    an    18-year-old",
+              style: AppTextStyles.label(
+                context,
+              ).copyWith(color: AppColors.textNav, height: 1.0),
+            ),
+          ),
+        ),
+        SlideFadeIn(
+          animation: _anim.getAnimation(15),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Container(
+            color: AppColors.background,
+            child: Text(
+              isMobile(context)
+                  ? "developer from  Russia who"
+                  : "developer  from  Russia  who",
+              style: AppTextStyles.label(
+                context,
+              ).copyWith(color: AppColors.textNav, height: 1.0),
+            ),
+          ),
+        ),
+        SlideFadeIn(
+          animation: _anim.getAnimation(16),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Container(
+            color: AppColors.background,
+            child: Text(
+              isMobile(context)
+                  ? "has not  yet  decided on a"
+                  : "has  not  yet decided  on  a",
+              style: AppTextStyles.label(
+                context,
+              ).copyWith(color: AppColors.textNav, height: 1.0),
+            ),
+          ),
+        ),
+        SlideFadeIn(
+          animation: _anim.getAnimation(17),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Container(
+            color: AppColors.background,
+            child: Text(
+              isMobile(context)
+                  ? "career   path.    At   the"
+                  : "career path. At the  moment,",
+              style: AppTextStyles.label(
+                context,
+              ).copyWith(color: AppColors.textNav, height: 1.0),
+            ),
+          ),
+        ),
+        SlideFadeIn(
+          animation: _anim.getAnimation(18),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Container(
+            color: AppColors.background,
+            child: Text(
+              isMobile(context)
+                  ? "moment, I am interested in"
+                  : "I  am  interested  in mobile",
+              style: AppTextStyles.label(
+                context,
+              ).copyWith(color: AppColors.textNav, height: 1.0),
+            ),
+          ),
+        ),
+        SlideFadeIn(
+          animation: _anim.getAnimation(19),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Container(
+            color: AppColors.background,
+            child: Text(
+              isMobile(context)
+                  ? "mobile  development  using"
+                  : "development  using   Flutter",
+              style: AppTextStyles.label(
+                context,
+              ).copyWith(color: AppColors.textNav, height: 1.0),
+            ),
+          ),
+        ),
+        SlideFadeIn(
+          animation: _anim.getAnimation(20),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Container(
+            color: AppColors.background,
+            child: Text(
+              isMobile(context)
+                  ? "Flutter    and     backend"
+                  : "and    backend   development",
+              style: AppTextStyles.label(
+                context,
+              ).copyWith(color: AppColors.textNav, height: 1.0),
+            ),
+          ),
+        ),
+        SlideFadeIn(
+          animation: _anim.getAnimation(21),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Container(
+            color: AppColors.background,
+            child: Text(
+              isMobile(context) ? "development    using   Go." : "using Go.",
+
+              style: AppTextStyles.label(
+                context,
+              ).copyWith(color: AppColors.textNav, height: 1.0),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TechnologiesSection extends StatelessWidget {
+  final StaggeredAnimationController _anim;
+
+  const _TechnologiesSection({required this._anim});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SlideFadeIn(
+          animation: _anim.getAnimation(22),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Text("TECHNOLOGIES", style: AppTextStyles.label(context)),
+        ),
+        SlideFadeIn(
+          animation: _anim.getAnimation(23),
+          offsetY: isMobile(context) ? 20.0 : 10.0,
+          child: Container(height: 4, color: Colors.white),
+        ),
+        _InfoRow(
+          leftPart: "FLUTTER",
+          rightPart: "CURRENT",
+          anim: _anim,
+          animationIndex: 24,
+        ),
+        _InfoRow(
+          leftPart: "GO",
+          rightPart: "CURRENT",
+          anim: _anim,
+          animationIndex: 25,
+        ),
+        _InfoRow(
+          leftPart: "UNITY & C#",
+          rightPart: "INTERESTED",
+          anim: _anim,
+          animationIndex: 26,
+        ),
+        _InfoRow(
+          leftPart: "ARDUINO",
+          rightPart: "INTERESTED",
+          anim: _anim,
+          animationIndex: 27,
+        ),
+        _InfoRow(
+          leftPart: "KOTLIN & JAVA",
+          rightPart: "",
+          anim: _anim,
+          animationIndex: 28,
+        ),
+        _InfoRow(
+          leftPart: "PYTHON",
+          rightPart: "",
+          anim: _anim,
+          animationIndex: 29,
+        ),
+        _InfoRow(
+          leftPart: "RUST",
+          rightPart: "",
+          anim: _anim,
+          animationIndex: 30,
+        ),
+      ],
+    );
+  }
+}
+
+class _LinksSection extends StatelessWidget {
+  final StaggeredAnimationController _anim;
+
+  const _LinksSection({required this._anim});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SlideFadeIn(
+          animation: _anim.getAnimation(31),
+          offsetY: isMobile(context) ? 10.0 : 20.0,
+          child: Text("TECHNOLOGIES", style: AppTextStyles.label(context)),
+        ),
+        SlideFadeIn(
+          animation: _anim.getAnimation(32),
+          offsetY: isMobile(context) ? 20.0 : 10.0,
+          child: Container(height: 4, color: Colors.white),
+        ),
+        _Link(
+          label: "TELEGRAM",
+          url: "https://t.me/thequorix",
+          animation: _anim.getAnimation(33),
+        ),
+        _Link(
+          label: "DISCORD",
+          url: "https://discord.com/users/408268839206256652",
+          animation: _anim.getAnimation(34),
+        ),
+        _Link(
+          label: "STEAM",
+          url: "https://steamcommunity.com/profiles/76561199108831532/",
+          animation: _anim.getAnimation(35),
+        ),
+        _Link(
+          label: "GITHUB",
+          url: "https://github.com/TheQuorix",
+          animation: _anim.getAnimation(36),
+        ),
+        _Link(
+          label: "HACKATIME",
+          url: "https://hackatime.hackclub.com/@quorix",
+          animation: _anim.getAnimation(37),
+        ),
+        _Link(
+          label: "MY DISCORD SERVER",
+          url: "https://discord.gg/CKkdMZTmcA",
+          animation: _anim.getAnimation(38),
+        ),
+        _Link(
+          label: "MY DEV CHANNEL",
+          url: "https://t.me/quorix_dev",
+          animation: _anim.getAnimation(39),
+        ),
+      ],
+    );
+  }
+}
+
+class _Link extends StatelessWidget {
+  final String label;
+  final String url;
+  final Animation<double> animation;
+
+  const _Link({
+    required this.label,
+    required this.url,
+    required this.animation,
+  });
+
+  Future<void> _openUrl() async {
+    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideFadeIn(
+      animation: animation,
+      offsetY: isMobile(context) ? 10.0 : 20.0,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: _openUrl,
+          child: Container(
+            color: AppColors.background,
+            child: Text(
+              label,
+              style: AppTextStyles.label(context).copyWith(
+                color: AppColors.textNav,
+                height: 1.2,
+                decoration: TextDecoration.underline,
+                decorationColor: AppColors.textNav,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

@@ -64,6 +64,15 @@ class AppTextStyles {
     );
   }
 
+  static TextStyle miniHeader(BuildContext context) {
+    return TextStyle(
+      fontFamily: "VCROSDMono",
+      fontSize: isMobile(context) ? 32 : 64,
+      fontWeight: FontWeight.normal,
+      color: AppColors.textPrimary,
+    );
+  }
+
   static TextStyle label(BuildContext context) {
     return TextStyle(
       fontFamily: "VCROSDMono",

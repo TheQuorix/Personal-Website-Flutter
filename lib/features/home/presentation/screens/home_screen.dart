@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:personal_website/core/theme/app_colors.dart';
 import 'package:personal_website/core/theme/app_text_styles.dart';
+import 'package:personal_website/core/animations/staggered_animation_controller.dart';
 import 'package:personal_website/core/widgets/app_button.dart';
 import 'package:personal_website/core/widgets/slide_fade_in.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -14,42 +16,25 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller;
-
-  static const int _itemCount = 13;
+  late final StaggeredAnimationController _anim;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 150 * _itemCount + 300),
-    )..forward();
+    _anim = StaggeredAnimationController(vsync: this, itemCount: 13)..forward();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _anim.dispose();
     super.dispose();
-  }
-
-  Animation<double> _itemAnimation(int i) {
-    final start = i / _itemCount;
-    final end = start + (1 / _itemCount) + 0.15;
-    return CurvedAnimation(
-      parent: _controller,
-      curve: Interval(
-        start.clamp(0.0, 1.0),
-        end.clamp(0.0, 1.0),
-        curve: Curves.easeOut,
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     final width = MediaQuery.of(context).size.width;
     final isMobile = width < 600;
+    final offsetX = isMobile ? -20.0 : -40.0;
 
     return Container(
       decoration: const BoxDecoration(
@@ -68,154 +53,185 @@ class _HomeScreenState extends State<HomeScreen>
                 color: isMobile ? Colors.transparent : AppColors.border,
                 width: 2,
               ),
-              borderRadius: BorderRadius.all(Radius.circular(15.0)),
+              borderRadius: const BorderRadius.all(Radius.circular(15.0)),
             ),
           ),
           child: Scaffold(
             backgroundColor: Colors.transparent,
-            body: Row(
-              children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                    horizontal: isMobile ? 10.0 : 85.0,
+            body: Padding(
+              padding: EdgeInsets.symmetric(horizontal: isMobile ? 10.0 : 85.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SlideFadeIn(
+                    animation: _anim.getAnimation(0),
+                    offsetX: offsetX,
+                    child: Text("QUORIX", style: AppTextStyles.logo(context)),
                   ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  SlideFadeIn(
+                    animation: _anim.getAnimation(1),
+                    offsetX: offsetX,
+                    child: Container(
+                      color: AppColors.background,
+                      child: Text(
+                        "EARLY_ACCESS READY",
+                        style: AppTextStyles.console(context),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 85.0),
+                  SlideFadeIn(
+                    animation: _anim.getAnimation(2),
+                    offsetX: offsetX,
+                    child: Container(
+                      color: AppColors.background,
+                      child: Text(
+                        "PAGE QUORIX.RU INITIALIZED",
+                        style: AppTextStyles.console(context),
+                      ),
+                    ),
+                  ),
+                  SlideFadeIn(
+                    animation: _anim.getAnimation(3),
+                    offsetX: offsetX,
+                    child: Container(
+                      color: AppColors.background,
+                      child: Text(
+                        "DIAGNOSTICS...OK",
+                        style: AppTextStyles.console(context),
+                      ),
+                    ),
+                  ),
+                  SlideFadeIn(
+                    animation: _anim.getAnimation(4),
+                    offsetX: offsetX,
+                    child: Container(
+                      color: AppColors.background,
+                      child: Text(
+                        "PAGE INFO:",
+                        style: AppTextStyles.console(context),
+                      ),
+                    ),
+                  ),
+                  SlideFadeIn(
+                    animation: _anim.getAnimation(5),
+                    offsetX: offsetX,
+                    child: Container(
+                      color: AppColors.background,
+                      child: Text(
+                        "172 TOTAL 10 TODAY 93 UNIQUE",
+                        style: AppTextStyles.console(context),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 15.0, bottom: 20.0),
+                    child: Column(
+                      spacing: 20.0,
+                      children: [
+                        SlideFadeIn(
+                          animation: _anim.getAnimation(6),
+                          offsetX: offsetX,
+                          child: AppButton(
+                            label: 'INFO',
+                            filled: true,
+                            onPressed: () => context.go('/info'),
+                          ),
+                        ),
+                        SlideFadeIn(
+                          animation: _anim.getAnimation(7),
+                          offsetX: offsetX,
+                          child: AppButton(
+                            label: 'PROJECTS',
+                            onPressed: () => context.go('/projects'),
+                          ),
+                        ),
+                        SlideFadeIn(
+                          animation: _anim.getAnimation(8),
+                          offsetX: offsetX,
+                          child: AppButton(
+                            label: 'COMMENTS',
+                            onPressed: () => context.go('/comments'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SlideFadeIn(
+                    animation: _anim.getAnimation(9),
+                    offsetX: offsetX,
+                    child: Container(
+                      color: AppColors.background,
+                      child: Text(
+                        "INIT OTORING...OK",
+                        style: AppTextStyles.console(context),
+                      ),
+                    ),
+                  ),
+                  Row(
+                    spacing: 20.0,
                     children: [
-                      SlideFadeIn(
-                        animation: _itemAnimation(0),
-                        offsetX: isMobile ? -20.0 : -40.0,
-                        child: Text(
-                          "QUORIX",
-                          style: AppTextStyles.logo(context),
-                        ),
+                      _WebringLink(
+                        label: 'PREV',
+                        endpoint: 'prev',
+                        animation: _anim.getAnimation(10),
+                        isMobile: isMobile,
                       ),
-                      SlideFadeIn(
-                        animation: _itemAnimation(1),
-                        offsetX: isMobile ? -20.0 : -40.0,
-                        child: Text(
-                          "EARLY_ACCESS READY",
-                          style: AppTextStyles.console(context),
-                        ),
+                      _WebringLink(
+                        label: 'RANDOM',
+                        endpoint: 'random',
+                        animation: _anim.getAnimation(11),
+                        isMobile: isMobile,
                       ),
-                      const SizedBox(height: 85.0),
-                      SlideFadeIn(
-                        animation: _itemAnimation(2),
-                        offsetX: isMobile ? -20.0 : -40.0,
-                        child: Text(
-                          "PAGE QUORIX.RU INITIALIZED",
-                          style: AppTextStyles.console(context),
-                        ),
-                      ),
-                      SlideFadeIn(
-                        animation: _itemAnimation(3),
-                        offsetX: isMobile ? -20.0 : -40.0,
-                        child: Text(
-                          "DIAGNOSTICS...OK",
-                          style: AppTextStyles.console(context),
-                        ),
-                      ),
-                      SlideFadeIn(
-                        animation: _itemAnimation(4),
-                        offsetX: isMobile ? -20.0 : -40.0,
-                        child: Text(
-                          "PAGE INFO:",
-                          style: AppTextStyles.console(context),
-                        ),
-                      ),
-                      SlideFadeIn(
-                        animation: _itemAnimation(5),
-                        offsetX: isMobile ? -20.0 : -40.0,
-                        child: Text(
-                          "172 TOTAL 10 TODAY 93 UNIQUE",
-                          style: AppTextStyles.console(context),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 15.0, bottom: 20.0),
-                        child: Column(
-                          spacing: 20.0,
-                          children: [
-                            SlideFadeIn(
-                              animation: _itemAnimation(6),
-                              offsetX: isMobile ? -20.0 : -40.0,
-                              child: AppButton(
-                                label: 'INFO',
-                                filled: true,
-                                onPressed: () => context.go('/info'),
-                              ),
-                            ),
-                            SlideFadeIn(
-                              animation: _itemAnimation(7),
-                              offsetX: isMobile ? -20.0 : -40.0,
-                              child: AppButton(
-                                label: 'PROJECTS',
-                                onPressed: () => context.go('/projects'),
-                              ),
-                            ),
-                            SlideFadeIn(
-                              animation: _itemAnimation(8),
-                              offsetX: isMobile ? -20.0 : -40.0,
-                              child: AppButton(
-                                label: 'COMMENTS',
-                                onPressed: () => context.go('/comments'),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                      SlideFadeIn(
-                        animation: _itemAnimation(9),
-                        offsetX: isMobile ? -20.0 : -40.0,
-                        child: Text(
-                          "INIT OTORING...OK",
-                          style: AppTextStyles.console(context),
-                        ),
-                      ),
-                      Row(
-                        spacing: 20.0,
-                        children: [
-                          SlideFadeIn(
-                            animation: _itemAnimation(10),
-                            offsetY: isMobile ? 10.0 : 20.0,
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: Text(
-                                "PREV",
-                                style: AppTextStyles.nav(context),
-                              ),
-                            ),
-                          ),
-                          SlideFadeIn(
-                            animation: _itemAnimation(11),
-                            offsetY: isMobile ? 10.0 : 20.0,
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: Text(
-                                "RANDOM",
-                                style: AppTextStyles.nav(context),
-                              ),
-                            ),
-                          ),
-                          SlideFadeIn(
-                            animation: _itemAnimation(12),
-                            offsetY: isMobile ? 10.0 : 20.0,
-                            child: MouseRegion(
-                              cursor: SystemMouseCursors.click,
-                              child: Text(
-                                "NEXT",
-                                style: AppTextStyles.nav(context),
-                              ),
-                            ),
-                          ),
-                        ],
+                      _WebringLink(
+                        label: 'NEXT',
+                        endpoint: 'next',
+                        animation: _anim.getAnimation(12),
+                        isMobile: isMobile,
                       ),
                     ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _WebringLink extends StatelessWidget {
+  final String label;
+  final String endpoint;
+  final Animation<double> animation;
+  final bool isMobile;
+
+  const _WebringLink({
+    required this.label,
+    required this.endpoint,
+    required this.animation,
+    required this.isMobile,
+  });
+
+  Future<void> _openUrl() async {
+    final url = Uri.parse('https://webring.otomir23.me/quorix/$endpoint');
+    await launchUrl(url, mode: LaunchMode.externalApplication);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideFadeIn(
+      animation: animation,
+      offsetY: isMobile ? 10.0 : 20.0,
+      child: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: _openUrl,
+          child: Container(
+            color: AppColors.background,
+            child: Text(label, style: AppTextStyles.nav(context)),
           ),
         ),
       ),

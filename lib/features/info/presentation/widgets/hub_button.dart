@@ -6,12 +6,12 @@ import 'package:personal_website/core/utils/adaptation.dart';
 class HubButton extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
-  final bool pRanked;
+  final bool watched;
 
   const HubButton({
     required this.label,
     required this.onPressed,
-    this.pRanked = false,
+    this.watched = false,
     super.key,
   });
 
@@ -23,9 +23,9 @@ class HubButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-          backgroundColor: pRanked ? AppColors.pRankedButton : Colors.black,
+          backgroundColor: watched ? AppColors.pRankedButton : Colors.black,
           side: BorderSide(
-            color: pRanked ? AppColors.pRankedButton : AppColors.border,
+            color: watched ? AppColors.pRankedButton : AppColors.border,
             width: 2,
           ),
           shape: const BeveledRectangleBorder(
@@ -37,7 +37,7 @@ class HubButton extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(label, style: AppTextStyles.button(context)),
-            pRanked
+            watched
                 ? Padding(
                     padding: const EdgeInsets.only(right: 12.0),
                     child: Text("P", style: AppTextStyles.button(context)),
