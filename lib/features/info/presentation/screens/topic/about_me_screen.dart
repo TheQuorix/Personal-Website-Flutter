@@ -1,12 +1,17 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:personal_website/core/theme/app_colors.dart';
 import 'package:personal_website/core/theme/app_text_styles.dart';
 import 'package:personal_website/core/utils/adaptation.dart';
 import 'package:personal_website/core/animations/staggered_animation_controller.dart';
 import 'package:personal_website/core/widgets/custom_scrollbar.dart';
 import 'package:personal_website/core/widgets/slide_fade_in.dart';
+import 'package:personal_website/core/providers/info_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class AboutMeScreen extends StatefulWidget {
   const AboutMeScreen({super.key});
@@ -20,17 +25,32 @@ class _AboutMeScreenState extends State<AboutMeScreen>
   late final StaggeredAnimationController _anim;
   late final ScrollController _scrollController;
 
+  String _currentTime = '';
+  Timer? _timer;
+
   @override
   void initState() {
     super.initState();
     _anim = StaggeredAnimationController(vsync: this, itemCount: 40)..forward();
     _scrollController = ScrollController();
+
+    _updateTime();
+    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+      _updateTime();
+    });
+  }
+
+  void _updateTime() {
+    setState(() {
+      _currentTime = DateFormat('HH:mm:ss').format(DateTime.now());
+    });
   }
 
   @override
   void dispose() {
     _anim.dispose();
     _scrollController.dispose();
+    _timer?.cancel();
     super.dispose();
   }
 
@@ -112,7 +132,7 @@ class _AboutMeScreenState extends State<AboutMeScreen>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        _InfoSection(anim: _anim),
+                        _InfoSection(anim: _anim, currentTime: _currentTime),
                         const SizedBox(height: 20.0),
 
                         _MeSection(anim: _anim),
@@ -184,8 +204,9 @@ class _InfoRow extends StatelessWidget {
 
 class _InfoSection extends StatelessWidget {
   final StaggeredAnimationController _anim;
+  final String currentTime;
 
-  const _InfoSection({required this._anim});
+  const _InfoSection({required this._anim, required this.currentTime});
 
   @override
   Widget build(BuildContext context) {
@@ -226,11 +247,30 @@ class _InfoSection extends StatelessWidget {
           anim: _anim,
           animationIndex: 7,
         ),
-        _InfoRow(
-          leftPart: "FROM:",
-          rightPart: "MOSCOW (19°)",
-          anim: _anim,
-          animationIndex: 8,
+        Consumer(
+          builder: (context, ref, child) {
+            final infoAsync = ref.watch(infoProvider);
+            return infoAsync.when(
+              loading: () => _InfoRow(
+                leftPart: "FROM:",
+                rightPart: "MOSCOW (LOADING...)",
+                anim: _anim,
+                animationIndex: 8,
+              ),
+              error: (_, _) => _InfoRow(
+                leftPart: "FROM:",
+                rightPart: "MOSCOW (ERROR!)",
+                anim: _anim,
+                animationIndex: 8,
+              ),
+              data: (info) => _InfoRow(
+                leftPart: "FROM:",
+                rightPart: "MOSCOW (${info.weather.temp.round()}°)",
+                anim: _anim,
+                animationIndex: 8,
+              ),
+            );
+          },
         ),
         _InfoRow(
           leftPart: "TIMEZONE:",
@@ -240,7 +280,7 @@ class _InfoSection extends StatelessWidget {
         ),
         _InfoRow(
           leftPart: "CURRENT TIME:",
-          rightPart: "21:37:27",
+          rightPart: currentTime,
           anim: _anim,
           animationIndex: 10,
         ),
