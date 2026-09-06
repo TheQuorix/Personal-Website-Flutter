@@ -81,4 +81,31 @@ class AppTextStyles {
       color: AppColors.textPrimary,
     );
   }
+
+  static TextStyle musicLabel(BuildContext context) {
+    return TextStyle(
+      fontFamily: "VCROSDMono",
+      fontSize: 64,
+      fontWeight: FontWeight.normal,
+      color: AppColors.textPrimary,
+    );
+  }
+
+  static TextStyle musicAuthor(BuildContext context) {
+    return TextStyle(
+      fontFamily: "VCROSDMono",
+      fontSize: 32,
+      fontWeight: FontWeight.normal,
+      color: AppColors.textNav,
+    );
+  }
+
+  static TextStyle musicStatus(BuildContext context) {
+    return TextStyle(
+      fontFamily: "VCROSDMono",
+      fontSize: 24,
+      fontWeight: FontWeight.normal,
+      color: AppColors.textConsole,
+    );
+  }
 }

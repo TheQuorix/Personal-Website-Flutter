@@ -163,8 +163,10 @@ class _GithubSection extends StatelessWidget {
               builder: (context, ref, child) {
                 final infoAsync = ref.watch(infoProvider);
                 return infoAsync.when(
-                  loading: () => Text("Loading"),
-                  error: (_, _) => Text("Error"),
+                  loading: () =>
+                      Text("Loading", style: AppTextStyles.console(context)),
+                  error: (_, _) =>
+                      Text("Error", style: AppTextStyles.console(context)),
                   data: (info) => Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 5.0,
