@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:personal_website/core/providers/visits_provider.dart';
 import 'package:personal_website/core/theme/app_colors.dart';
 import 'package:personal_website/core/theme/app_text_styles.dart';
 import 'package:personal_website/core/animations/staggered_animation_controller.dart';
@@ -119,9 +121,24 @@ class _HomeScreenState extends State<HomeScreen>
                     offsetX: offsetX,
                     child: Container(
                       color: AppColors.background,
-                      child: Text(
-                        "172 TOTAL 10 TODAY 93 UNIQUE",
-                        style: AppTextStyles.console(context),
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          final visitsAsync = ref.watch(visitsProvider);
+                          return visitsAsync.when(
+                            loading: () => Text(
+                              "? TOTAL ? TODAY ? UNIQUE",
+                              style: AppTextStyles.console(context),
+                            ),
+                            error: (_, _) => Text(
+                              "ERR TOTAL ERR TODAY ERR UNIQUE",
+                              style: AppTextStyles.console(context),
+                            ),
+                            data: (visits) => Text(
+                              "${visits.totalVisits} TOTAL ${visits.dailyVisits[0].total} TODAY ${visits.uniqueVisits} UNIQUE",
+                              style: AppTextStyles.console(context),
+                            ),
+                          );
+                        },
                       ),
                     ),
                   ),

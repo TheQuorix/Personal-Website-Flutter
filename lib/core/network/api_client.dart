@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:personal_website/core/models/info/info_model.dart';
+import 'package:personal_website/core/models/visits/visit_stats_model.dart';
 
 class ApiService {
   final Dio _dio = Dio(
@@ -16,6 +17,19 @@ class ApiService {
       print('Status: ${response.statusCode}');
       print('Data: ${response.data}');
       return InfoModel.fromJson(response.data);
+    } on DioException catch (e) {
+      print('Dio error: ${e.message}');
+      print('Response: ${e.response?.data}');
+      throw Exception('Ошибка загрузки: ${e.message}');
+    }
+  }
+
+  Future<VisitStatsModel> getVisits() async {
+    try {
+      final response = await _dio.get('/api/v1/visits/stats');
+      print('Status: ${response.statusCode}');
+      print('Data: ${response.data}');
+      return VisitStatsModel.fromJson(response.data);
     } on DioException catch (e) {
       print('Dio error: ${e.message}');
       print('Response: ${e.response?.data}');
