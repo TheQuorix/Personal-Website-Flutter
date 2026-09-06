@@ -10,6 +10,7 @@ import 'package:personal_website/core/animations/staggered_animation_controller.
 import 'package:personal_website/core/widgets/custom_scrollbar.dart';
 import 'package:personal_website/core/widgets/slide_fade_in.dart';
 import 'package:personal_website/core/providers/info_provider.dart';
+import 'package:personal_website/features/info/presentation/widgets/info_row.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -156,52 +157,6 @@ class _AboutMeScreenState extends State<AboutMeScreen>
   }
 }
 
-class _InfoRow extends StatelessWidget {
-  final String leftPart;
-  final String rightPart;
-  final StaggeredAnimationController _anim;
-  final int animationIndex;
-
-  const _InfoRow({
-    required this.leftPart,
-    required this.rightPart,
-    required this._anim,
-    required this.animationIndex,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SlideFadeIn(
-      animation: _anim.getAnimation(animationIndex),
-      offsetY: isMobile(context) ? 10.0 : 20.0,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            color: AppColors.background,
-            child: Text(
-              leftPart,
-              style: AppTextStyles.label(
-                context,
-              ).copyWith(color: AppColors.textNav, height: 1.0),
-            ),
-          ),
-          Container(
-            color: AppColors.background,
-            child: Text(
-              rightPart,
-              style: AppTextStyles.label(
-                context,
-              ).copyWith(color: AppColors.textNav, height: 1.0),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class _InfoSection extends StatelessWidget {
   final StaggeredAnimationController _anim;
   final String currentTime;
@@ -223,25 +178,25 @@ class _InfoSection extends StatelessWidget {
           offsetY: isMobile(context) ? 10.0 : 20.0,
           child: Container(height: 4, color: Colors.white),
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "NAME:",
           rightPart: "TIMUR",
           anim: _anim,
           animationIndex: 4,
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "AGE:",
           rightPart: "19",
           anim: _anim,
           animationIndex: 5,
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "PRONOUNS:",
           rightPart: "HE/HIM",
           anim: _anim,
           animationIndex: 6,
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "LANGS:",
           rightPart: "RU, EN (LEARNING)",
           anim: _anim,
@@ -251,19 +206,19 @@ class _InfoSection extends StatelessWidget {
           builder: (context, ref, child) {
             final infoAsync = ref.watch(infoProvider);
             return infoAsync.when(
-              loading: () => _InfoRow(
+              loading: () => InfoRow(
                 leftPart: "FROM:",
                 rightPart: "MOSCOW (LOADING...)",
                 anim: _anim,
                 animationIndex: 8,
               ),
-              error: (_, _) => _InfoRow(
+              error: (_, _) => InfoRow(
                 leftPart: "FROM:",
                 rightPart: "MOSCOW (ERROR!)",
                 anim: _anim,
                 animationIndex: 8,
               ),
-              data: (info) => _InfoRow(
+              data: (info) => InfoRow(
                 leftPart: "FROM:",
                 rightPart: "MOSCOW (${info.weather.temp.round()}°)",
                 anim: _anim,
@@ -272,19 +227,19 @@ class _InfoSection extends StatelessWidget {
             );
           },
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "TIMEZONE:",
           rightPart: "UTC+3",
           anim: _anim,
           animationIndex: 9,
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "CURRENT TIME:",
           rightPart: currentTime,
           anim: _anim,
           animationIndex: 10,
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "LEARNING:",
           rightPart: "FLUTTER, GO",
           anim: _anim,
@@ -459,43 +414,43 @@ class _TechnologiesSection extends StatelessWidget {
           offsetY: isMobile(context) ? 20.0 : 10.0,
           child: Container(height: 4, color: Colors.white),
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "FLUTTER",
           rightPart: "CURRENT",
           anim: _anim,
           animationIndex: 24,
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "GO",
           rightPart: "CURRENT",
           anim: _anim,
           animationIndex: 25,
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "UNITY & C#",
           rightPart: "INTERESTED",
           anim: _anim,
           animationIndex: 26,
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "ARDUINO",
           rightPart: "INTERESTED",
           anim: _anim,
           animationIndex: 27,
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "KOTLIN & JAVA",
           rightPart: "",
           anim: _anim,
           animationIndex: 28,
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "PYTHON",
           rightPart: "",
           anim: _anim,
           animationIndex: 29,
         ),
-        _InfoRow(
+        InfoRow(
           leftPart: "RUST",
           rightPart: "",
           anim: _anim,
