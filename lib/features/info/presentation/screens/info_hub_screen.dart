@@ -198,15 +198,15 @@ class _InfoHubScreenState extends State<InfoHubScreen>
                           animation: _anim.getAnimation(9),
                           offsetY: isMobile(context) ? 20.0 : 40.0,
                           child: HubButton(
-                            label: "SYSTEM INFO",
+                            label: "SYSTEM",
                             onPressed: () {
                               _watchedController.markWatched(
-                                WatchedButtonsController.keySystemInfo,
+                                WatchedButtonsController.keySystem,
                               );
-                              context.go('/info/system_info');
+                              context.go('/info/system');
                             },
                             watched: _watchedController.isWatched(
-                              WatchedButtonsController.keySystemInfo,
+                              WatchedButtonsController.keySystem,
                             ),
                           ),
                         ),
@@ -214,15 +214,15 @@ class _InfoHubScreenState extends State<InfoHubScreen>
                           animation: _anim.getAnimation(10),
                           offsetY: isMobile(context) ? 20.0 : 40.0,
                           child: HubButton(
-                            label: "GAME ACTIVITY",
+                            label: "GAMES",
                             onPressed: () {
                               _watchedController.markWatched(
-                                WatchedButtonsController.keyGameActivity,
+                                WatchedButtonsController.keyGames,
                               );
-                              context.go('/info/game_activity');
+                              context.go('/info/games');
                             },
                             watched: _watchedController.isWatched(
-                              WatchedButtonsController.keyGameActivity,
+                              WatchedButtonsController.keyGames,
                             ),
                           ),
                         ),
