@@ -8,6 +8,7 @@ import 'package:personal_website/core/theme/app_text_styles.dart';
 import 'package:personal_website/core/utils/adaptation.dart';
 import 'package:personal_website/core/animations/staggered_animation_controller.dart';
 import 'package:personal_website/core/widgets/custom_scrollbar.dart';
+import 'package:personal_website/core/widgets/link.dart';
 import 'package:personal_website/core/widgets/slide_fade_in.dart';
 import 'package:personal_website/core/providers/info_provider.dart';
 import 'package:personal_website/features/info/presentation/widgets/info_row.dart';
@@ -481,84 +482,42 @@ class _LinksSection extends StatelessWidget {
           offsetY: isMobile(context) ? 20.0 : 10.0,
           child: Container(height: 4, color: Colors.white),
         ),
-        _Link(
+        Link(
           label: "TELEGRAM",
           url: "https://t.me/thequorix",
           animation: _anim.getAnimation(33),
         ),
-        _Link(
+        Link(
           label: "DISCORD",
           url: "https://discord.com/users/408268839206256652",
           animation: _anim.getAnimation(34),
         ),
-        _Link(
+        Link(
           label: "STEAM",
           url: "https://steamcommunity.com/profiles/76561199108831532/",
           animation: _anim.getAnimation(35),
         ),
-        _Link(
+        Link(
           label: "GITHUB",
           url: "https://github.com/TheQuorix",
           animation: _anim.getAnimation(36),
         ),
-        _Link(
+        Link(
           label: "HACKATIME",
           url: "https://hackatime.hackclub.com/@quorix",
           animation: _anim.getAnimation(37),
         ),
-        _Link(
+        Link(
           label: "MY DISCORD SERVER",
           url: "https://discord.gg/CKkdMZTmcA",
           animation: _anim.getAnimation(38),
         ),
-        _Link(
+        Link(
           label: "MY DEV CHANNEL",
           url: "https://t.me/quorix_dev",
           animation: _anim.getAnimation(39),
         ),
       ],
-    );
-  }
-}
-
-class _Link extends StatelessWidget {
-  final String label;
-  final String url;
-  final Animation<double> animation;
-
-  const _Link({
-    required this.label,
-    required this.url,
-    required this.animation,
-  });
-
-  Future<void> _openUrl() async {
-    await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return SlideFadeIn(
-      animation: animation,
-      offsetY: isMobile(context) ? 10.0 : 20.0,
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: _openUrl,
-          child: Container(
-            color: AppColors.background,
-            child: Text(
-              label,
-              style: AppTextStyles.label(context).copyWith(
-                color: AppColors.textNav,
-                height: 1.2,
-                decoration: TextDecoration.underline,
-                decorationColor: AppColors.textNav,
-              ),
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

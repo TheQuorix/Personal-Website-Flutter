@@ -2,10 +2,12 @@ import 'package:dio/dio.dart';
 import 'package:personal_website/core/models/info/info_model.dart';
 import 'package:personal_website/core/models/visits/visit_stats_model.dart';
 
+const backendUrl = "http://172.23.144.1:8080";
+
 class ApiService {
   final Dio _dio = Dio(
     BaseOptions(
-      baseUrl: 'http://172.23.144.1:8080',
+      baseUrl: backendUrl,
       connectTimeout: Duration(seconds: 5),
       receiveTimeout: Duration(seconds: 5),
     ),
